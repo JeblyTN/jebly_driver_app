@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
     <application
-        android:label="driver"
+        android:label="Jebly Driver"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         tools:replace="android:label"
@@ -50,7 +50,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_API_KEY_HERE" />
+            android:value="AIzaSyCLIBc_g8mIm6bfwvu1jzNZA0l1S5fPI0k" />
 
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"

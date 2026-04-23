@@ -1,4 +1,4 @@
-package com.foodies.driver.android
+package com.jebly.driver
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterFragmentActivity

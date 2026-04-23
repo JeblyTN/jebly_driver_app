@@ -195,7 +195,7 @@ class FireStoreUtils {
         if (event.docs.isNotEmpty) {
           Constant.currencyModel = CurrencyModel.fromJson(event.docs.first.data());
         } else {
-          Constant.currencyModel = CurrencyModel(id: "", code: "USD", decimalDigits: 2, enable: true, name: "US Dollar", symbol: "\$", symbolAtRight: false);
+          Constant.currencyModel = CurrencyModel(id: "", code: "TND", decimalDigits: 3, enable: true, name: "Tunisian Dinar", symbol: "د.ت", symbolAtRight: true);
         }
       });
       await fireStore.collection(CollectionName.settings).doc("globalSettings").get().then((value) async {
