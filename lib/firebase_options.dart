@@ -5,15 +5,6 @@ import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -50,23 +41,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'YOUR_ANDROID_API_KEY',
-    appId: 'YOUR_ANDROID_APP_ID',
-    messagingSenderId: 'YOUR_ANDROID_MESSAGING_SENDER_ID',
-    projectId: 'YOUR_ANDROID_PROJECT_ID',
-    databaseURL: 'YOUR_ANDROID_DATABASE_URL',
-    storageBucket: 'YOUR_ANDROID_STORAGE_BUCKET',
+    apiKey: 'AIzaSyCLIBc_g8mIm6bfwvu1jzNZA0l1S5fPI0k',
+    appId: '1:471877407566:android:d57a0fe0f3bb8735d0841f',
+    messagingSenderId: '471877407566',
+    projectId: 'jebly-prod',
+    databaseURL: 'https://jebly-prod-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'jebly-prod.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'YOUR_IOS_API_KEY',
-    appId: 'YOUR_IOS_APP_ID',
-    messagingSenderId: 'YOUR_IOS_MESSAGING_SENDER_ID',
-    projectId: 'YOUR_IOS_PROJECT_ID',
-    databaseURL: 'YOUR_IOS_DATABASE_URL',
-    storageBucket: 'YOUR_IOS_STORAGE_BUCKET',
-    androidClientId: 'YOUR_ANDROID_CLIENT_ID',
-    iosClientId: 'YOUR_IOS_CLIENT_ID',
-    iosBundleId: 'YOUR_IOS_BUNDLE_ID',
+    apiKey: 'AIzaSyCfn0gAOerc6qqXEMuY0JUfWJ1grhQaQqY',
+    appId: '1:471877407566:ios:4b85e339a97ee0bcd0841f',
+    messagingSenderId: '471877407566',
+    projectId: 'jebly-prod',
+    databaseURL: 'https://jebly-prod-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'jebly-prod.firebasestorage.app',
+    iosBundleId: 'com.jebly.driver',
   );
 }

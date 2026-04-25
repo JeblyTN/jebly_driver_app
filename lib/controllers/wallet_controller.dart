@@ -104,7 +104,7 @@ class WalletController extends GetxController {
         xenditModel.value = Xendit.fromJson(jsonDecode(Preferences.getString(Preferences.xenditSettings)));
 
         flutterStipe.Stripe.publishableKey = stripeModel.value.clientpublishableKey.toString();
-        flutterStipe.Stripe.merchantIdentifier = 'Foodie Driver';
+        flutterStipe.Stripe.merchantIdentifier = 'Jebly Driver';
         flutterStipe.Stripe.instance.applySettings();
         setRef();
 
@@ -371,7 +371,7 @@ class WalletController extends GetxController {
                     primary: AppThemeData.primary300,
                   ),
                 ),
-                merchantDisplayName: 'Foodie'));
+                merchantDisplayName: 'Jebly'));
         displayStripePaymentSheet(amount: amount);
       }
     } catch (e, s) {
@@ -693,7 +693,7 @@ class WalletController extends GetxController {
     var options = {
       'key': razorPayModel.value.razorpayKey,
       'amount': amount * 100,
-      'name': 'Foodie',
+      'name': 'Jebly',
       'order_id': orderId,
       "currency": "INR",
       'description': 'wallet Topup',

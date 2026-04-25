@@ -23,7 +23,7 @@ class OnBoardingController extends GetxController {
     await FireStoreUtils.getOnBoardingList().then((value) {
       onBoardingList.value = value;
     });
-    // onBoardingList.add(OnBoardingModel(id: "",title: "Welcome to Foodie Driver App",description: "Join our community of drivers and start earning by delivering delicious meals.",image: "assets/images/image_1.png"));
+    // onBoardingList.add(OnBoardingModel(id: "",title: "Welcome to Jebly Driver App",description: "Join our community of drivers and start earning by delivering delicious meals.",image: "assets/images/image_1.png"));
     // onBoardingList.add(OnBoardingModel(id: "",title: "Manage Your Deliveries",description: "Stay on top of your deliveries with real-time updates and easy navigation.",image: "assets/images/image_2.png"));
     // onBoardingList.add(OnBoardingModel(id: "",title: "Earn More with Incentives",description: "Boost your earnings with our driver incentives and rewards program.",image: "assets/images/image_3.png"));
 

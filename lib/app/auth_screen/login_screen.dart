@@ -39,7 +39,7 @@ class LoginScreen extends StatelessWidget {
                     style: TextStyle(color: themeChange.getThem() ? AppThemeData.grey50 : AppThemeData.grey900, fontSize: 22, fontFamily: AppThemeData.semiBold),
                   ),
                   Text(
-                    "Sign in to access your Foodie account and manage your deliveries seamlessly.".tr,
+                    "Sign in to access your Jebly account and manage your deliveries seamlessly.".tr,
                     style: TextStyle(color: themeChange.getThem() ? AppThemeData.grey50 : AppThemeData.grey500, fontFamily: AppThemeData.regular),
                   ),
                   const SizedBox(
