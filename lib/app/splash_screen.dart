@@ -18,7 +18,7 @@ class SplashScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset("assets/images/ic_logo.png"),
+                Image.asset("assets/images/ic_logo.png", width: 150, height: 150),
                 const SizedBox(height: 10,),
                 Text(
                   "Welcome to Jebly Driver".tr,
