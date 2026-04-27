@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         LanguageModel languageModel = Constant.getLanguage();
         LocalizationService().changeLocale(languageModel.slug.toString());
       } else {
-        LanguageModel languageModel = LanguageModel(slug: "en", isRtl: false, title: "English");
+        LanguageModel languageModel = LanguageModel(slug: "fr", isRtl: false, title: "French");
         Preferences.setString(Preferences.languageCodeKey, jsonEncode(languageModel.toJson()));
       }
     });

@@ -12,7 +12,7 @@ class SplashScreen extends StatelessWidget {
       init: SplashController(),
       builder: (controller) {
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: const Color(0xFFFF6839),
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -22,11 +22,13 @@ class SplashScreen extends StatelessWidget {
                 const SizedBox(height: 10,),
                 Text(
                   "Welcome to Jebly Driver".tr,
-                  style: TextStyle(color: Colors.black, fontSize: 28, fontFamily: AppThemeData.bold),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white, fontSize: 28, fontFamily: AppThemeData.bold),
                 ),
                 Text(
                   "Your Favorite Food Delivered Fast!".tr,
-                  style: TextStyle(color: Colors.black87),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white70),
                 ),
               ],
             ),

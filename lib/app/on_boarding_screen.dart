@@ -65,8 +65,9 @@ class OnBoardingScreen extends StatelessWidget {
                           height: 50,
                         ),
                         Image.asset(
-                          "assets/images/driver_logo.png",
-                          height: 120,
+                          "assets/images/ic_logo.png",
+                          width: 100,
+                          height: 100,
                         ),
                         const SizedBox(
                           height: 20,
