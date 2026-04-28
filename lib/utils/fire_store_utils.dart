@@ -591,12 +591,29 @@ class FireStoreUtils {
       }
     }
 
+    // ---------------- DELIVERY FEE SPLIT (30% platform / 70% driver) ----------------
+    final double platformDeliveryFeeShare = deliveryCharges * 0.30;
+    final double driverDeliveryFeeShare = deliveryCharges * 0.70;
+
     double driverAmount = 0.0;
+    double platformDebt = 0.0;
     final isCOD = orderModel.paymentMethod?.toLowerCase() == "cod";
 
     if (isCOD) {
-      // Driver gives money back
-      driverAmount = -((subTotal - totalDiscount) + productTaxAmount + orderTaxAmount + packagingTaxAmount + platformTaxAmount + packagingCharge + platformFee);
+      // Driver physically collected ALL cash from customer.
+      // Driver keeps 70% delivery fee + tips.
+      driverAmount = driverDeliveryFeeShare + deliveryTips;
+
+      // Platform debt = food total + all taxes + packaging + platform fee + 30% delivery fee.
+      // FieldValue.increment treats missing fields as 0, so no init needed.
+      platformDebt = (subTotal - totalDiscount) +
+          productTaxAmount +
+          orderTaxAmount +
+          packagingTaxAmount +
+          platformTaxAmount +
+          packagingCharge +
+          platformFee +
+          platformDeliveryFeeShare;
 
       WalletTransactionModel codTxn = WalletTransactionModel(
         id: Constant.getUuid(),
@@ -605,16 +622,39 @@ class FireStoreUtils {
         paymentMethod: "COD",
         transactionUser: "driver",
         userId: FireStoreUtils.getCurrentUid(),
-        isTopup: false,
-        note: "COD order amount deduction",
+        isTopup: true,
+        note: "COD delivery fee & tips earned",
         orderId: orderModel.id,
         paymentStatus: "success",
       );
-
       await FireStoreUtils.setWalletTransaction(codTxn);
+
+      // Track cash owed to platform on the driver document.
+      await fireStore.collection(CollectionName.users).doc(orderModel.driverID!).update({
+        'cashBalance': FieldValue.increment(platformDebt),
+        'platformDebt': FieldValue.increment(platformDebt),
+      });
+
+      // Check if driver has hit their cash limit.
+      final driverDoc = await fireStore.collection(CollectionName.users).doc(orderModel.driverID!).get();
+      final driverData = driverDoc.data() as Map<String, dynamic>;
+      final double currentCashBalance = (driverData['cashBalance'] ?? 0).toDouble();
+
+      final settingsDoc = await fireStore.collection(CollectionName.settings).doc('globalSettings').get();
+      final settingsData = settingsDoc.data() ?? {};
+      final double globalCashLimit = (settingsData['driverCashBalanceLimit'] ?? 300).toDouble();
+      final double driverCashLimit = (driverData['cashBalanceLimit'] ?? globalCashLimit).toDouble();
+
+      if (currentCashBalance >= driverCashLimit) {
+        await fireStore.collection(CollectionName.users).doc(orderModel.driverID!).update({
+          'isActive': false,
+          'blockedReason': 'cash_limit_reached',
+        });
+      }
     } else {
-      // Online payment → driver earns
-      driverAmount = deliveryCharges + deliveryTips + driverDeliveryTaxAmount;
+      // Online payment — platform already collected everything.
+      // Driver earns 70% delivery fee + tips + delivery tax.
+      driverAmount = driverDeliveryFeeShare + deliveryTips + driverDeliveryTaxAmount;
 
       WalletTransactionModel onlineTxn = WalletTransactionModel(
         id: Constant.getUuid(),
@@ -628,7 +668,6 @@ class FireStoreUtils {
         orderId: orderModel.id,
         paymentStatus: "success",
       );
-
       await FireStoreUtils.setWalletTransaction(onlineTxn);
     }
 
@@ -637,6 +676,18 @@ class FireStoreUtils {
       userId: orderModel.driverID!,
       amount: driverAmount.toString(),
     );
+
+    // ---------------- SAVE SPLIT FIELDS TO ORDER DOCUMENT ----------------
+    final Map<String, dynamic> splitFields = {
+      'platformDeliveryFeeShare': platformDeliveryFeeShare,
+      'driverDeliveryFeeShare': driverDeliveryFeeShare,
+      'driverEarning': driverAmount,
+    };
+    if (isCOD) splitFields['platformDebt'] = platformDebt;
+    await fireStore
+        .collection(CollectionName.restaurantOrders)
+        .doc(orderModel.id)
+        .update(splitFields);
   }
 
   static Future<void> sendTopUpMail({required String amount, required String paymentMethod, required String tractionId}) async {
