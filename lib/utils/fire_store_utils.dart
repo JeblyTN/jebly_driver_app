@@ -677,11 +677,33 @@ class FireStoreUtils {
       amount: driverAmount.toString(),
     );
 
+    // ===== RESTAURANT EARNINGS (Module C) =====
+    // subTotal and totalDiscount are already computed above.
+    final double adminCommissionRate = double.tryParse(orderModel.adminCommission ?? '0') ?? 0.0;
+    final String adminCommissionType = orderModel.adminCommissionType ?? 'Percent';
+
+    final double platformCommissionAmount = adminCommissionType == 'Percent'
+        ? (subTotal - totalDiscount) * (adminCommissionRate / 100)
+        : adminCommissionRate;
+
+    final double restaurantEarning = (subTotal - totalDiscount) - platformCommissionAmount;
+
+    if (orderModel.vendorID != null && orderModel.vendorID!.isNotEmpty) {
+      await fireStore.collection(CollectionName.vendors).doc(orderModel.vendorID!).update({
+        'walletAmount': FieldValue.increment(restaurantEarning),
+        'weeklyAccrual': FieldValue.increment(restaurantEarning),
+        'weeklyOrderCount': FieldValue.increment(1),
+        'totalEarnings': FieldValue.increment(restaurantEarning),
+      });
+    }
+
     // ---------------- SAVE SPLIT FIELDS TO ORDER DOCUMENT ----------------
     final Map<String, dynamic> splitFields = {
       'platformDeliveryFeeShare': platformDeliveryFeeShare,
       'driverDeliveryFeeShare': driverDeliveryFeeShare,
       'driverEarning': driverAmount,
+      'restaurantEarning': restaurantEarning,
+      'platformCommissionAmount': platformCommissionAmount,
     };
     if (isCOD) splitFields['platformDebt'] = platformDebt;
     await fireStore
