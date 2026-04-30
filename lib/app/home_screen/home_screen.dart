@@ -15,6 +15,7 @@ import 'package:driver/themes/round_button_fill.dart';
 import 'package:driver/utils/dark_theme_provider.dart';
 import 'package:driver/utils/fire_store_utils.dart';
 import 'package:driver/utils/utils.dart';
+import 'package:driver/widget/cash_balance_card.dart';
 import 'package:driver/widget/my_separator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart' as flutterMap;
@@ -114,6 +115,7 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               )
                             : const SizedBox(),
+                        const CashBalanceCard(),
                         Expanded(
                           child: Constant.mapType == "inappmap"
                               ? Constant.selectedMapType == "osm"

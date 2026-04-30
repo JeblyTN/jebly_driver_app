@@ -34,6 +34,10 @@ class UserModel {
   String? subscriptionPlanId;
   Timestamp? subscriptionExpiryDate;
   SubscriptionPlanModel? subscriptionPlan;
+  num? cashBalance;
+  num? platformDebt;
+  String? blockedReason;
+  num? cashBalanceLimit;
 
   UserModel(
       {this.id,
@@ -65,7 +69,11 @@ class UserModel {
       this.provider,
       this.subscriptionPlanId,
       this.subscriptionExpiryDate,
-      this.subscriptionPlan});
+      this.subscriptionPlan,
+      this.cashBalance,
+      this.platformDebt,
+      this.blockedReason,
+      this.cashBalanceLimit});
 
   String fullName() {
     return "${firstName ?? ''} ${lastName ?? ''}";
@@ -108,6 +116,10 @@ class UserModel {
     subscriptionPlanId = json['subscriptionPlanId'];
     subscriptionExpiryDate = json['subscriptionExpiryDate'];
     subscriptionPlan = json['subscription_plan'] != null ? SubscriptionPlanModel.fromJson(json['subscription_plan']) : null;
+    cashBalance = json['cashBalance'] ?? 0;
+    platformDebt = json['platformDebt'] ?? 0;
+    blockedReason = json['blockedReason'];
+    cashBalanceLimit = json['cashBalanceLimit'] ?? 300;
   }
 
   Map<String, dynamic> toJson() {
@@ -146,6 +158,10 @@ class UserModel {
       data['inProgressOrderID'] = inProgressOrderID;
       data['orderRequestData'] = orderRequestData;
       data['rotation'] = rotation;
+      data['cashBalance'] = cashBalance ?? 0;
+      data['platformDebt'] = platformDebt ?? 0;
+      data['cashBalanceLimit'] = cashBalanceLimit ?? 300;
+      if (blockedReason != null) data['blockedReason'] = blockedReason;
     }
     if (role == Constant.userRoleVendor) {
       data['vendorID'] = vendorID;

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:typed_data';
+import 'package:driver/app/deposit_required_screen.dart';
 import 'package:driver/constant/collection_name.dart';
 import 'package:driver/constant/constant.dart';
 import 'package:driver/constant/send_notification.dart';
@@ -108,10 +109,19 @@ class HomeController extends GetxController {
     } catch (_) {}
   }
 
+  bool _depositScreenPushed = false;
+
   // -------------------------
   // Order actions
   // -------------------------
   Future<void> acceptOrder() async {
+    if (driverModel.value.blockedReason == 'cash_limit_reached') {
+      if (!_depositScreenPushed) {
+        _depositScreenPushed = true;
+        Get.to(() => const DepositRequiredScreen())?.then((_) => _depositScreenPushed = false);
+      }
+      return;
+    }
     ShowToastDialog.showLoader("Please wait".tr);
     await AudioPlayerService.playSound(false);
     driverModel.value.inProgressOrderID ??= [];
@@ -184,6 +194,12 @@ class HomeController extends GetxController {
           if (driverModel.value.id != null) {
             isLoading.value = false;
             update();
+            if (driverModel.value.blockedReason == 'cash_limit_reached' && !_depositScreenPushed) {
+              _depositScreenPushed = true;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Get.to(() => const DepositRequiredScreen())?.then((_) => _depositScreenPushed = false);
+              });
+            }
             changeData();
             // Setup current order listener depending on state (singleOrderReceive or provided orderModel)
             _setupOrderListener();

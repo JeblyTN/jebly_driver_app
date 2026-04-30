@@ -1,4 +1,5 @@
 import 'package:driver/app/auth_screen/login_screen.dart';
+import 'package:driver/app/deposit_required_screen.dart';
 import 'package:driver/app/change_langauge/change_language_screen.dart';
 import 'package:driver/app/change_password_screen/change_password_screen.dart';
 import 'package:driver/app/chat_screens/driver_inbox_screen.dart';
@@ -207,6 +208,11 @@ class DrawerView extends StatelessWidget {
                         value: controller.userModel.value.isActive ?? false,
                         activeTrackColor: AppThemeData.primary300,
                         onChanged: (value) async {
+                          if (value == true && controller.userModel.value.blockedReason == 'cash_limit_reached') {
+                            ShowToastDialog.showToast('Your account is blocked. Please deposit collected cash to go online.'.tr);
+                            Get.to(() => const DepositRequiredScreen());
+                            return;
+                          }
                           if (Constant.isDriverVerification == true) {
                             if (controller.userModel.value.isDocumentVerify == true) {
                               controller.userModel.value.isActive = value;
