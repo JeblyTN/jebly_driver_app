@@ -428,6 +428,28 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              if ((controller.currentOrder.value.surgeMultiplier ?? 1.0) > 1.0)
+                Container(
+                  margin: const EdgeInsets.only(top: 6, bottom: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFD4EDDA),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFF28A745)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Text('⚡', style: TextStyle(fontSize: 15)),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          'Bonus surge: ×${controller.currentOrder.value.surgeMultiplier!.toStringAsFixed(1)} — Vous gagnez plus sur cette livraison!',
+                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF155724)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ((controller.currentOrder.value.tipAmount == null || controller.currentOrder.value.tipAmount!.isEmpty || double.parse(controller.currentOrder.value.tipAmount.toString()) <= 0) ||
                       controller.currentOrder.value.isFreeDelivery == true)
                   ? const SizedBox()

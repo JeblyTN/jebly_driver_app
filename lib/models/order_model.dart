@@ -41,6 +41,7 @@ class OrderModel {
   bool? isPosOrder;
   String? taxScope;
   String? platformFee;
+  double? surgeMultiplier;
 
   OrderModel(
       {this.address,
@@ -74,7 +75,7 @@ class OrderModel {
         this.isFreeDelivery,
         this.driverDeliveryTax,
         this.packagingTax,
-        this.platformTax,this.taxScope, this.platformFee,this.isPosOrder});
+        this.platformTax,this.taxScope, this.platformFee,this.isPosOrder,this.surgeMultiplier});
 
   OrderModel.fromJson(Map<String, dynamic> json) {
     address = json['address'] != null ? ShippingAddress.fromJson(json['address']) : null;
@@ -138,6 +139,7 @@ class OrderModel {
     taxScope = json['taxScope'];
     platformFee = json['platformFee'];
     isPosOrder = json['isPosOrder'] ?? false;
+    surgeMultiplier = (json['surgeMultiplier'] as num?)?.toDouble();
   }
 
   Map<String, dynamic> toJson() {
@@ -195,6 +197,7 @@ class OrderModel {
     data['taxScope'] = taxScope;
     data['platformFee'] = platformFee;
     data['isPosOrder'] = isPosOrder ?? false;
+    if (surgeMultiplier != null) data['surgeMultiplier'] = surgeMultiplier;
     return data;
   }
 }
