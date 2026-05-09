@@ -357,9 +357,8 @@ class SignupScreen extends StatelessWidget {
                         ShowToastDialog.showToast("Please enter last name".tr);
                       } else if (controller.emailEditingController.value.text.isEmpty) {
                         ShowToastDialog.showToast("Please enter valid email".tr);
-                      } else if (controller.phoneNUmberEditingController.value.text.isEmpty) {
-                        ShowToastDialog.showToast("Please enter Phone number".tr);
                       } else if (controller.selectedZone.value.id == null) {
+                        // [PHONE_AUTH_HIDDEN] Phone no longer required — field kept for profile data
                         ShowToastDialog.showToast("Please select zone".tr);
                       } else {
                         controller.signUpWithEmailAndPassword();
@@ -371,8 +370,6 @@ class SignupScreen extends StatelessWidget {
                         ShowToastDialog.showToast("Please enter last name".tr);
                       } else if (controller.emailEditingController.value.text.isEmpty) {
                         ShowToastDialog.showToast("Please enter valid email".tr);
-                      } else if (controller.phoneNUmberEditingController.value.text.isEmpty) {
-                        ShowToastDialog.showToast("Please enter Phone number".tr);
                       } else if (controller.passwordEditingController.value.text.isEmpty) {
                         ShowToastDialog.showToast("Please enter password");
                       } else if (controller.conformPasswordEditingController.value.text.isEmpty) {
