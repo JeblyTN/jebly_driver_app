@@ -57,35 +57,45 @@ class HomeScreenMultipleOrderController extends GetxController {
 
   Future<void> acceptOrder(OrderModel currentOrder) async {
     ShowToastDialog.showLoader("Please wait".tr);
-    await AudioPlayerService.playSound(false);
-    driverModel.value.inProgressOrderID ?? [];
-    driverModel.value.orderRequestData!.remove(currentOrder.id);
-    driverModel.value.inProgressOrderID!.add(currentOrder.id);
+    try {
+      await AudioPlayerService.playSound(false);
+      driverModel.value.inProgressOrderID ??= [];
+      driverModel.value.orderRequestData!.remove(currentOrder.id);
+      driverModel.value.inProgressOrderID!.add(currentOrder.id);
 
-    await FireStoreUtils.updateUser(driverModel.value);
+      await FireStoreUtils.updateUser(driverModel.value);
 
-    currentOrder.status = Constant.driverAccepted;
-    currentOrder.driverID = driverModel.value.id;
-    currentOrder.driver = driverModel.value;
+      currentOrder.status = Constant.driverAccepted;
+      currentOrder.driverID = driverModel.value.id;
+      currentOrder.driver = driverModel.value;
 
-    await FireStoreUtils.setOrder(currentOrder);
-
-    await SendNotification.sendFcmMessage(Constant.driverAcceptedNotification, currentOrder.author!.fcmToken.toString(), {});
-    await SendNotification.sendFcmMessage(Constant.driverAcceptedNotification, currentOrder.vendor!.fcmToken.toString(), {});
+      await FireStoreUtils.setOrder(currentOrder);
+    } catch (e) {
+      ShowToastDialog.closeLoader();
+      ShowToastDialog.showToast("Something went wrong, please try again.".tr);
+      return;
+    }
     ShowToastDialog.closeLoader();
+    SendNotification.sendFcmMessage(Constant.driverAcceptedNotification, currentOrder.author?.fcmToken ?? '', {});
+    SendNotification.sendFcmMessage(Constant.driverAcceptedNotification, currentOrder.vendor?.fcmToken ?? '', {});
   }
 
   Future<void> rejectOrder(OrderModel currentOrder) async {
     ShowToastDialog.showLoader("Please wait".tr);
-    await AudioPlayerService.playSound(false);
-    currentOrder.rejectedByDrivers ??= [];
+    try {
+      await AudioPlayerService.playSound(false);
+      currentOrder.rejectedByDrivers ??= [];
 
-    currentOrder.rejectedByDrivers!.add(driverModel.value.id);
-    currentOrder.status = Constant.driverRejected;
-    await FireStoreUtils.setOrder(currentOrder);
+      currentOrder.rejectedByDrivers!.add(driverModel.value.id);
+      currentOrder.status = Constant.driverRejected;
+      await FireStoreUtils.setOrder(currentOrder);
 
-    driverModel.value.orderRequestData!.remove(currentOrder.id);
-    await FireStoreUtils.updateUser(driverModel.value);
-    ShowToastDialog.closeLoader();
+      driverModel.value.orderRequestData!.remove(currentOrder.id);
+      await FireStoreUtils.updateUser(driverModel.value);
+    } catch (e) {
+      ShowToastDialog.showToast("Something went wrong, please try again.".tr);
+    } finally {
+      ShowToastDialog.closeLoader();
+    }
   }
 }

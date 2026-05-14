@@ -123,43 +123,54 @@ class HomeController extends GetxController {
       return;
     }
     ShowToastDialog.showLoader("Please wait".tr);
-    await AudioPlayerService.playSound(false);
-    driverModel.value.inProgressOrderID ??= [];
-    driverModel.value.orderRequestData?.remove(currentOrder.value.id);
-    driverModel.value.inProgressOrderID!.add(currentOrder.value.id);
+    try {
+      await AudioPlayerService.playSound(false);
+      driverModel.value.inProgressOrderID ??= [];
+      driverModel.value.orderRequestData?.remove(currentOrder.value.id);
+      driverModel.value.inProgressOrderID!.add(currentOrder.value.id);
 
-    await FireStoreUtils.updateUser(driverModel.value);
+      await FireStoreUtils.updateUser(driverModel.value);
 
-    currentOrder.value.status = Constant.driverAccepted;
-    currentOrder.value.driverID = driverModel.value.id;
-    currentOrder.value.driver = driverModel.value;
+      currentOrder.value.status = Constant.driverAccepted;
+      currentOrder.value.driverID = driverModel.value.id;
+      currentOrder.value.driver = driverModel.value;
 
-    await FireStoreUtils.setOrder(currentOrder.value);
-
-    await SendNotification.sendFcmMessage(Constant.driverAcceptedNotification, currentOrder.value.author!.fcmToken.toString(), {});
-    await SendNotification.sendFcmMessage(Constant.driverAcceptedNotification, currentOrder.value.vendor!.fcmToken.toString(), {});
+      await FireStoreUtils.setOrder(currentOrder.value);
+    } catch (e) {
+      ShowToastDialog.closeLoader();
+      ShowToastDialog.showToast("Something went wrong, please try again.".tr);
+      return;
+    }
     ShowToastDialog.closeLoader();
+    // Fire-and-forget: notifications are non-critical and slow (remote token fetch)
+    SendNotification.sendFcmMessage(Constant.driverAcceptedNotification, currentOrder.value.author?.fcmToken ?? '', {});
+    SendNotification.sendFcmMessage(Constant.driverAcceptedNotification, currentOrder.value.vendor?.fcmToken ?? '', {});
   }
 
   Future<void> rejectOrder() async {
     ShowToastDialog.showLoader("Please wait".tr);
-    await AudioPlayerService.playSound(false);
+    try {
+      await AudioPlayerService.playSound(false);
 
-    currentOrder.value.rejectedByDrivers ??= [];
-    currentOrder.value.rejectedByDrivers!.add(driverModel.value.id);
-    currentOrder.value.status = Constant.driverRejected;
-    await FireStoreUtils.setOrder(currentOrder.value);
+      currentOrder.value.rejectedByDrivers ??= [];
+      currentOrder.value.rejectedByDrivers!.add(driverModel.value.id);
+      currentOrder.value.status = Constant.driverRejected;
+      await FireStoreUtils.setOrder(currentOrder.value);
 
-    driverModel.value.orderRequestData?.remove(currentOrder.value.id);
-    await FireStoreUtils.updateUser(driverModel.value);
+      driverModel.value.orderRequestData?.remove(currentOrder.value.id);
+      await FireStoreUtils.updateUser(driverModel.value);
 
-    currentOrder.value = OrderModel();
-    await clearMap();
+      currentOrder.value = OrderModel();
+      await clearMap();
 
-    if (Constant.singleOrderReceive == false) {
-      Get.back();
+      if (Constant.singleOrderReceive == false) {
+        Get.back();
+      }
+    } catch (e) {
+      ShowToastDialog.showToast("Something went wrong, please try again.".tr);
+    } finally {
+      ShowToastDialog.closeLoader();
     }
-    ShowToastDialog.closeLoader();
   }
 
   Future<void> clearMap() async {
