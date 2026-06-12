@@ -139,7 +139,7 @@ class FireStoreUtils {
 
   static Future<bool> updateUser(UserModel userModel) async {
     bool isUpdate = false;
-    await fireStore.collection(CollectionName.users).doc(userModel.id).set(userModel.toJson()).whenComplete(() {
+    await fireStore.collection(CollectionName.users).doc(userModel.id).set(userModel.toJson(), SetOptions(merge: true)).whenComplete(() {
       if (userModel.role == Constant.userRoleDriver) {
         Constant.userModel = userModel;
       }

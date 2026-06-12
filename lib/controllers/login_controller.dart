@@ -46,14 +46,16 @@ class LoginController extends GetxController {
         await FirebaseAuth.instance.signOut();
         ShowToastDialog.showToast("This user is not created in driver application.".tr);
       }
-    } on FirebaseAuthException catch (e) {
-      print(e.code);
-      if (e.code == 'user-not-found') {
-        ShowToastDialog.showToast("No user found for that email.".tr);
-      } else if (e.code == 'wrong-password') {
-        ShowToastDialog.showToast("Wrong password provided for that user.".tr);
-      } else if (e.code == 'invalid-email') {
-        ShowToastDialog.showToast("Invalid Email.".tr);
+    } catch (e) {
+      if (e is FirebaseAuthException) {
+        print(e.code);
+        if (e.code == 'user-not-found') {
+          ShowToastDialog.showToast("No user found for that email.".tr);
+        } else if (e.code == 'wrong-password') {
+          ShowToastDialog.showToast("Wrong password provided for that user.".tr);
+        } else if (e.code == 'invalid-email') {
+          ShowToastDialog.showToast("Invalid Email.".tr);
+        }
       }
     }
     ShowToastDialog.closeLoader();

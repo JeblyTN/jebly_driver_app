@@ -32,20 +32,25 @@ class SplashController extends GetxController {
         } else {
           bool isLogin = await FireStoreUtils.isLogin();
           if (isLogin == true) {
-            await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid()).then((value) async {
-              if (value != null) {
-                UserModel userModel = value;
-                Constant.userModel = userModel;
-                log(userModel.toJson().toString());
-                if (userModel.role == Constant.userRoleDriver) {
-                  if (userModel.active == true) {
-                    userModel.fcmToken = await NotificationService.getToken();
-                    await FireStoreUtils.updateUser(userModel);
-                    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-                    if (initialMessage != null && initialMessage.data['type'] != null) {
-                      // handleMessageClick(role: initialMessage.data['chatType'], type: initialMessage.data['type'], isBgApp: true);
+            try {
+              await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid()).then((value) async {
+                if (value != null) {
+                  UserModel userModel = value;
+                  Constant.userModel = userModel;
+                  log(userModel.toJson().toString());
+                  if (userModel.role == Constant.userRoleDriver) {
+                    if (userModel.active == true) {
+                      userModel.fcmToken = await NotificationService.getToken();
+                      await FireStoreUtils.updateUser(userModel);
+                      RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+                      if (initialMessage != null && initialMessage.data['type'] != null) {
+                        // handleMessageClick(role: initialMessage.data['chatType'], type: initialMessage.data['type'], isBgApp: true);
+                      } else {
+                        Get.offAll(const DashBoardScreen());
+                      }
                     } else {
-                      Get.offAll(const DashBoardScreen());
+                      await FirebaseAuth.instance.signOut();
+                      Get.offAll(const LoginScreen());
                     }
                   } else {
                     await FirebaseAuth.instance.signOut();
@@ -55,8 +60,12 @@ class SplashController extends GetxController {
                   await FirebaseAuth.instance.signOut();
                   Get.offAll(const LoginScreen());
                 }
-              }
-            });
+              });
+            } catch (e) {
+              log('SplashController redirectScreen error: $e');
+              await FirebaseAuth.instance.signOut();
+              Get.offAll(const LoginScreen());
+            }
           } else {
             await FirebaseAuth.instance.signOut();
             Get.offAll(const LoginScreen());
