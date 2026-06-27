@@ -29,7 +29,9 @@ class LoginScreen extends StatelessWidget {
             appBar: AppBar(
               backgroundColor: themeChange.getThem() ? AppThemeData.surfaceDark : AppThemeData.surface,
             ),
-            body: Padding(
+            body: SafeArea(
+              bottom: false,
+              child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +155,10 @@ class LoginScreen extends StatelessWidget {
                 ],
               ),
             ),
-            bottomNavigationBar: Column(
+            ),
+            bottomNavigationBar: SafeArea(
+              top: false,
+              child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
@@ -252,6 +257,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
             ),
           );
         });

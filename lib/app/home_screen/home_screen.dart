@@ -50,7 +50,9 @@ class HomeScreen extends StatelessWidget {
                   ),
                 )
               : null,
-          body: controller.isLoading.value
+          body: SafeArea(
+            bottom: false,
+            child: controller.isLoading.value
               ? Constant.loader()
               : Constant.userModel?.vendorID?.isEmpty == true && Constant.isDriverVerification == true && Constant.userModel!.isDocumentVerify == false
                   ? Padding(
@@ -229,10 +231,15 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                         ),
-                        controller.currentOrder.value.id != null && controller.currentOrder.value.status == Constant.driverPending ? showDriverBottomSheet(themeChange, controller) : Container(),
-                        controller.currentOrder.value.id != null && controller.currentOrder.value.status != Constant.driverPending ? buildOrderActionsCard(themeChange, controller) : Container(),
+                        controller.currentOrder.value.id != null && controller.currentOrder.value.status == Constant.driverPending
+                            ? SafeArea(top: false, child: showDriverBottomSheet(themeChange, controller))
+                            : Container(),
+                        controller.currentOrder.value.id != null && controller.currentOrder.value.status != Constant.driverPending
+                            ? SafeArea(top: false, child: buildOrderActionsCard(themeChange, controller))
+                            : Container(),
                       ],
                     ),
+          ),
         );
       },
     );
