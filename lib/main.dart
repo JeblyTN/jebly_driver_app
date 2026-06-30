@@ -16,6 +16,7 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -38,6 +39,23 @@ void main() async {
       appleProvider: AppleProvider.appAttest,
     );
     await Preferences.initPref();
+
+    // Register the dedicated order-alarm channel so Android uses it for
+    // background/killed-state FCM notifications (order_channel_v2 is a new id —
+    // Android ignores sound changes on an existing channel id).
+    const AndroidNotificationChannel orderChannel = AndroidNotificationChannel(
+      'order_channel_v2',
+      'Nouvelles commandes',
+      description: 'Alerte sonore pour les nouvelles commandes livreur',
+      importance: Importance.max,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound('order_sound'),
+      enableVibration: true,
+    );
+    await FlutterLocalNotificationsPlugin()
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(orderChannel);
+
     runApp(const MyApp());
   }, (error, stackTrace) {});
 }
